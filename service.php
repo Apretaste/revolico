@@ -61,14 +61,14 @@ class Tienda extends Service
 		// get the first one, thta is the item
 		$item = $items[0];
 
+		// get the path
+		$di = \Phalcon\DI\FactoryDefault::getDefault();
+		$wwwroot = $di->get('path')['root'];
+
 		// get the images to embeb into the email
 		$images = array();
 		if($item->number_of_pictures > 0)
 		{
-			// get the path
-			$di = \Phalcon\DI\FactoryDefault::getDefault();
-			$wwwroot = $di->get('path')['root'];
-
 			for($i=1; $i<=$item->number_of_pictures; $i++)
 			{
 				$file = "$wwwroot/public/tienda/".md5($item->source_url)."_$i.jpg";
