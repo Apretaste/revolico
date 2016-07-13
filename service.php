@@ -96,6 +96,12 @@ class Tienda extends Service
 	{
 		$title = str_replace("'"," ",$request->query);
 		$desc = str_replace("'"," ",$request->body);
+		
+		$title = substr(trim($title), 0, 100);
+		$body = substr(trim($title), 0, 1000);
+		
+		if ($title == '') $title = substr($body, 0, 100);
+		
 		$prices = $this->getPricesFrom($title.' '.$desc);
 		$price = '0';
 		$currency = 'CUC';
