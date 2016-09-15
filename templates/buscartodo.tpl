@@ -1,3 +1,9 @@
+<table width="100%">
+	<tr>
+		<td align="right">{button caption="Comprar en Apretaste" size="small" href="MERCADO"}</td>
+	</tr>
+</table>
+
 {foreach from=$items item=item name=tienda}
 	<table width="100%">
 		<tr>

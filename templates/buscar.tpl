@@ -9,6 +9,7 @@
 			</font></small>
 			{space10}
 		</td>
+		<td align="right">{button caption="Comprar en Apretaste" size="small" href="MERCADO"}</td>
 	</tr>
 </table>
 

@@ -365,6 +365,7 @@ class Tienda extends Service
 			AND DATE(date_time_posted) > DATE_SUB(NOW(), INTERVAL 1 MONTH)
 			GROUP BY ad_title 
 			HAVING COUNT(ad_title) = 1";
+
 		$results = $connection->deepQuery($sql);
 
 		// get every search term and its strength
