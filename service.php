@@ -4,7 +4,7 @@ class Tienda extends Service
 {
 	/**
 	 * Function called once this service is called
-	 * 
+	 *
 	 * @param Request
 	 * @return Response
 	 * */
@@ -96,12 +96,12 @@ class Tienda extends Service
 	{
 		$title = str_replace("'"," ",$request->query);
 		$desc = str_replace("'"," ",$request->body);
-		
+
 		$title = substr(trim($title), 0, 100);
 		$desc = substr(trim($desc), 0, 1000);
-		
+
 		if ($title == '') $title = substr($desc, 0, 100);
-		
+
 		$prices = $this->getPricesFrom($title.' '.$desc);
 		$price = '0';
 		$currency = 'CUC';
@@ -143,7 +143,7 @@ class Tienda extends Service
 		$date->modify('+30 days');
 		$expire = $date->format('Y-m-d')." 00:00:00";
 		$category = $this->classify($title.' '.$desc);
-		$contact_name = $request->name;
+		$contact_name = explode('@', $owner)[0];
 
 		$db = new Connection();
 		$db->deepQuery("INSERT INTO _tienda_post (ad_title,ad_body,contact_email_1,price,currency,contact_name,category,number_of_pictures,source_url) VALUES ('$title','$desc','$owner',$price,'$currency','$contact_name','$category',$number_of_pictures,'$hash');");
@@ -157,7 +157,7 @@ class Tienda extends Service
 
 	/**
 	 * Get a category for the post
-	 * 
+	 *
 	 * @author kuma
 	 * @param String, title and body concatenated
 	 * @return String category
@@ -242,7 +242,7 @@ class Tienda extends Service
 
 	/**
 	 * Search and return based on number of results
-	 * 
+	 *
 	 * @author salvipascual
 	 * */
 	private function getResponseBasedOnNumberOfResults(Request $request, $numberOfResults)
@@ -318,12 +318,12 @@ class Tienda extends Service
 
 	/**
 	 * Search in the database for the most similar results
-	 * 
+	 *
 	 * */
 	private function search($query, $limit){
 		// get the count and data
 		$connection = new Connection();
-		
+
 		$words = array();
 		foreach(explode(" ", $query) as $word)
 		{
@@ -357,13 +357,13 @@ class Tienda extends Service
 		// create the new, enhanced phrase to search
 		$enhancedQuery = implode(" ", $words);
 
-		// search for all the results based on the query created 
-		$sql = 
+		// search for all the results based on the query created
+		$sql =
 			"SELECT *, 0 as popularity
 			FROM _tienda_post
 			WHERE MATCH (ad_title) AGAINST ('$enhancedQuery' IN BOOLEAN MODE) > 0
 			AND DATE(date_time_posted) > DATE_SUB(NOW(), INTERVAL 1 MONTH)
-			GROUP BY ad_title 
+			GROUP BY ad_title
 			HAVING COUNT(ad_title) = 1";
 
 		$results = $connection->deepQuery($sql);
@@ -386,7 +386,7 @@ class Tienda extends Service
 			// ensures keywords with more searches show always first
 			foreach($terms as $term)
 			{
-				if (stripos($result->ad_title, $term->word) !== false) 
+				if (stripos($result->ad_title, $term->word) !== false)
 					$popularity += 50 + ceil($term->count/10);
 
 				if (stripos($result->ad_body, $term->word) !== false)
@@ -415,7 +415,7 @@ class Tienda extends Service
 					$phraseR = implode(" ", array_slice($words, 0, $i+2)) . " ";
 					if(strpos($result->ad_title, $phraseR) !== false) $popularity += 20 * count($phraseR);
 					if(strpos($result->ad_body, $phraseR) !== false) $popularity += 10 * count($phraseR);
-	
+
 					// read words from left to right
 					$phraseL = " " . implode(" ", array_slice($words, $i+1, count($words)));
 					if(strpos($result->ad_title, $phraseL) !== false) $popularity += 20 * count($phraseL);
@@ -449,7 +449,7 @@ class Tienda extends Service
 
 	/**
 	 * Clean a text to erase weird characters and make it look nicer
-	 * 
+	 *
 	 * @author salvipascual
 	 * */
 	private function clean($text)
@@ -469,7 +469,7 @@ class Tienda extends Service
 
 	/**
 	 * Fix the case of the sentense to look properly
-	 * 
+	 *
 	 * @author taken from the internet, updated by salvipascual
 	 * */
 	private function fixSentenceCase($str)
