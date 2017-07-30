@@ -5,8 +5,8 @@
 		<alias>shopping</alias>
 		<alias>shoping</alias>
 	</serviceAliases>
-	<serviceDescription><![CDATA[Le permite buscar art&iacute;culos y servicios entre miles de personas que venden, o publicar sus propios art&iacute;culos y servicios para ser vendidos]]></serviceDescription>
-	<creatorEmail>salvi.pascual@gmail.com</creatorEmail>
+	<serviceDescription>Le permite buscar articulos y servicios entre miles de personas que venden, o publicar sus propios artculos y servicios para ser vendidos</serviceDescription>
+	<creatorEmail>salvi@apretaste.com</creatorEmail>
 	<serviceCategory>negocios</serviceCategory>
 	<serviceUsage>
 		<![CDATA[

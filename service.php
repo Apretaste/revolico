@@ -250,11 +250,9 @@ class Tienda extends Service
 		// if the search is empty, return a message to the user
 		if(empty($request->query))
 		{
-			$serviceUsage = str_replace("{APRETASTE_EMAIL}", $this->utils->getValidEmailAddress(), nl2br($this->serviceUsage));
-
 			$response = new Response();
-			$response->setResponseSubject("Inserte un producto o servicio a buscar");
-			$response->createFromText("Usted no ha insertado ning&uacute;n producto o servicio a buscar, use nuestra tienda de la siguiente manera:<br/><br/><br/>$serviceUsage");
+			$response->setResponseSubject("Que desea hacer en la tienda?");
+			$response->createFromTemplate("home.tpl", array());
 			return $response;
 		}
 

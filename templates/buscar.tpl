@@ -4,7 +4,7 @@
 			<font color="gray">
 				{$numberOfDisplayedResults} de {$numberOfTotalResults} anuncios encontrados.
 				{if $numberOfTotalResults gt 10}
-					{link href="TIENDA BUSCARTODO $searchQuery" caption="Ver m&aacute;s"}
+					{link href="TIENDA BUSCARTODO {$searchQuery}" caption="Ver m&aacute;s"}
 				{/if}
 			</font></small>
 			{space10}
@@ -61,7 +61,7 @@
 					{$item->contact_phone|cuba_phone_format}{separator}
 				{/if}
 
-				{$item->date_time_posted|date_format:"%d/%m/%Y"}				
+				{$item->date_time_posted|date_format:"%d/%m/%Y"}
 				</font></small>
 			</td>
 		</tr>
