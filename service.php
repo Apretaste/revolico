@@ -360,7 +360,8 @@ class Tienda extends Service
 			"SELECT *, 0 as popularity
 			FROM _tienda_post
 			WHERE MATCH (ad_title) AGAINST ('$enhancedQuery' IN BOOLEAN MODE) > 0
-			AND DATE(date_time_posted) > DATE_SUB(NOW(), INTERVAL 1 MONTH)
+			-- AND DATE(date_time_posted) > DATE_SUB(NOW(), INTERVAL 1 MONTH)
+			AND DATEDIFF(NOW(), date_time_posted) <=30 
 			GROUP BY ad_title
 			HAVING COUNT(ad_title) = 1";
 
