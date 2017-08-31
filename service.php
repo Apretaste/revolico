@@ -7,43 +7,40 @@ class Tienda extends Service
 	 *
 	 * @param Request
 	 * @return Response
-	 * */
+	 */
 	public function _main(Request $request)
 	{
 		return $this->getResponseBasedOnNumberOfResults($request, 10);
 	}
-
 
 	/**
 	 * Same as the _main function
 	 *
 	 * @param Request
 	 * @return Response
-	 * */
+	 */
 	public function _buscar(Request $request)
 	{
 		return $this->getResponseBasedOnNumberOfResults($request, 10);
 	}
-
 
 	/**
 	 * Search 100 items
 	 *
 	 * @param Request
 	 * @return Response
-	 * */
+	 */
 	public function _buscartodo(Request $request)
 	{
 		return $this->getResponseBasedOnNumberOfResults($request, 100);
 	}
-
 
 	/**
 	 * View only one item based on the id
 	 *
 	 * @param Request
 	 * @return Response
-	 * */
+	 */
 	public function _ver(Request $request)
 	{
 		// get the item to look up
@@ -78,12 +75,12 @@ class Tienda extends Service
 
 		// display the results in the template
 		$response = new Response();
+		$response->setCache();
 		$response->setResponseSubject("El articulo que pidio ver");
 		$responseContent = array("item" => $item, "wwwroot" => $wwwroot);
 		$response->createFromTemplate("ver.tpl", $responseContent, $images);
 		return $response;
 	}
-
 
 	/**
 	 * Publishes a new item
@@ -91,7 +88,7 @@ class Tienda extends Service
 	 * @author kuma
 	 * @param Request
 	 * @return Response
-	 * */
+	 */
 	public function _publicar(Request $request)
 	{
 		$title = str_replace("'"," ",$request->query);
@@ -161,7 +158,7 @@ class Tienda extends Service
 	 * @author kuma
 	 * @param String, title and body concatenated
 	 * @return String category
-	 * */
+	 */
 	private function classify($text)
 	{
 		$map = array(
@@ -239,12 +236,11 @@ class Tienda extends Service
 		return $prices;
 	}
 
-
 	/**
 	 * Search and return based on number of results
 	 *
 	 * @author salvipascual
-	 * */
+	 */
 	private function getResponseBasedOnNumberOfResults(Request $request, $numberOfResults)
 	{
 		// if the search is empty, return a message to the user
@@ -313,11 +309,10 @@ class Tienda extends Service
 		return $response;
 	}
 
-
 	/**
 	 * Search in the database for the most similar results
 	 *
-	 * */
+	 */
 	private function search($query, $limit){
 		// get the count and data
 		$connection = new Connection();
@@ -361,7 +356,7 @@ class Tienda extends Service
 			FROM _tienda_post
 			WHERE MATCH (ad_title) AGAINST ('$enhancedQuery' IN BOOLEAN MODE) > 0
 			-- AND DATE(date_time_posted) > DATE_SUB(NOW(), INTERVAL 1 MONTH)
-			AND DATEDIFF(NOW(), date_time_posted) <=30 
+			AND DATEDIFF(NOW(), date_time_posted) <=30
 			GROUP BY ad_title
 			HAVING COUNT(ad_title) = 1";
 
@@ -445,12 +440,11 @@ class Tienda extends Service
 		);
 	}
 
-
 	/**
 	 * Clean a text to erase weird characters and make it look nicer
 	 *
 	 * @author salvipascual
-	 * */
+	 */
 	private function clean($text)
 	{
 		// erase weird symbols
@@ -465,12 +459,11 @@ class Tienda extends Service
 		return trim($text);
 	}
 
-
 	/**
 	 * Fix the case of the sentense to look properly
 	 *
 	 * @author taken from the internet, updated by salvipascual
-	 * */
+	 */
 	private function fixSentenceCase($str)
 	{
 		$cap = true;
