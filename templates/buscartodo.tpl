@@ -1,11 +1,9 @@
-<table width="100%">
-	<tr>
-		<td align="right">{button caption="Comprar en Apretaste" size="small" href="MERCADO"}</td>
-	</tr>
-</table>
+<h1>{$searchQuery|lower|capitalize}</h1>
+
+{space5}
 
 {foreach from=$items item=item name=tienda}
-	<table width="100%">
+	<table width="100%" cellpadding="10" cellspacing="0" bgcolor="{cycle values="#f2f2f2,white"}">
 		<tr>
 			<td>
 				{if $item->price neq 0 AND $item->price neq ""}
@@ -48,10 +46,4 @@
 			</td>
 		</tr>
 	</table>
-
-	{if not $smarty.foreach.tienda.last}
-		{space5}
-		{hr}
-		{space5}
-	{/if}
 {/foreach}

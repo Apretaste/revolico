@@ -1,20 +1,9 @@
-<table width="100%">
-	<tr>
-		<td align="right"><small>
-			<font color="gray">
-				{$numberOfDisplayedResults} de {$numberOfTotalResults} anuncios encontrados.
-				{if $numberOfTotalResults gt 10}
-					{link href="TIENDA BUSCARTODO {$searchQuery}" caption="Ver m&aacute;s"}
-				{/if}
-			</font></small>
-			{space10}
-		</td>
-		<td align="right">{button caption="Comprar en Apretaste" size="small" href="MERCADO"}</td>
-	</tr>
-</table>
+<h1>{$searchQuery|lower|capitalize}</h1>
 
-{foreach from=$items item=item name=tienda}
-	<table width="100%">
+{space5}
+
+{foreach from=$items item=item}
+	<table width="100%" cellpadding="10" cellspacing="0" bgcolor="{cycle values="#f2f2f2,white"}">
 		<tr>
 			<td rowspan="3" align="left" width="110" valign="middle">
 				{if $item->number_of_pictures gt 0}
@@ -66,10 +55,11 @@
 			</td>
 		</tr>
 	</table>
-
-	{if not $smarty.foreach.tienda.last}
-		{space10}
-		{hr}
-		{space10}
-	{/if}
 {/foreach}
+
+{if $numberOfTotalResults gt 10}
+	{space15}
+	<center>
+		<small><font color="gray">{$numberOfDisplayedResults} de {$numberOfTotalResults} art&iacute;culos encontrados {button href="TIENDA BUSCARTODO {$searchQuery}" caption="Ver m&aacute;s" size="small"}</font></small>
+	</center>
+{/if}

@@ -45,11 +45,12 @@ class Tienda extends Service
 	{
 		// get the item to look up
 		$connection = new Connection();
-		$items = $connection->deepQuery("SELECT * FROM _tienda_post WHERE id = '{$request->query}'");
+		$items = $connection->query("SELECT * FROM _tienda_post WHERE id = '{$request->query}'");
 
 		// return error email if no items were found
 		if(count($items) == 0){
 			$response = new Response();
+			$response->setCache();
 			$response->setResponseSubject("El producto o servicio no existe");
 			$response->createFromText("El producto o servicio que usted intenta buscar no existe. Puede que el n&uacute;mero sea incorrecto o que el vendedor lo halla sacado del sistema.");
 			return $response;
@@ -143,12 +144,11 @@ class Tienda extends Service
 		$contact_name = explode('@', $owner)[0];
 
 		$db = new Connection();
-		$db->deepQuery("INSERT INTO _tienda_post (ad_title,ad_body,contact_email_1,price,currency,contact_name,category,number_of_pictures,source_url) VALUES ('$title','$desc','$owner',$price,'$currency','$contact_name','$category',$number_of_pictures,'$hash');");
+		$db->query("INSERT INTO _tienda_post (ad_title,ad_body,contact_email_1,price,currency,contact_name,category,number_of_pictures,source_url) VALUES ('$title','$desc','$owner',$price,'$currency','$contact_name','$category',$number_of_pictures,'$hash');");
 
 		$response = new Response();
-		$response->setResponseSubject('Su anuncio a sido publicado');
+		$response->setResponseSubject('Su anuncio ha sido publicado');
 		$response->createFromText('Su anuncio <b>"'.$title.'"</b> ha sido publicado satisfactoriamente.');
-
 		return $response;
 	}
 
@@ -247,7 +247,8 @@ class Tienda extends Service
 		if(empty($request->query))
 		{
 			$response = new Response();
-			$response->setResponseSubject("Que desea hacer en la tienda?");
+			$response->setCache();
+			$response->setResponseSubject("Que desea comprar?");
 			$response->createFromTemplate("home.tpl", array());
 			return $response;
 		}
@@ -261,6 +262,7 @@ class Tienda extends Service
 		if(count($items) == 0)
 		{
 			$response = new Response();
+			$response->setCache("day");
 			$response->setResponseSubject("Su busqueda no produjo resultados");
 			$response->createFromText("Su b&uacute;squeda '{$request->query}' no produjo ning&uacute;n resultado. Por favor utilice otra frase de b&uacute;squeda e intente nuevamente.");
 			return $response;
@@ -304,6 +306,7 @@ class Tienda extends Service
 
 		// display the results in the template
 		$response = new Response();
+		$response->setCache("day");
 		$response->setResponseSubject("La busqueda que usted pidio");
 		$response->createFromTemplate($template, $responseContent, $images);
 		return $response;
@@ -313,7 +316,8 @@ class Tienda extends Service
 	 * Search in the database for the most similar results
 	 *
 	 */
-	private function search($query, $limit){
+	private function search($query, $limit)
+	{
 		// get the count and data
 		$connection = new Connection();
 
@@ -321,7 +325,7 @@ class Tienda extends Service
 		foreach(explode(" ", $query) as $word)
 		{
 			// do not process ignored words
-			$isNegativeWord = $connection->deepQuery("SELECT word FROM _search_ignored_words WHERE word='$word'");
+			$isNegativeWord = $connection->query("SELECT word FROM _search_ignored_words WHERE word='$word'");
 			if( ! empty($isNegativeWord)) { $words[] = "~$word"; continue; }
 
 			// calculate how many permutations are needed to be considered a typo
@@ -329,21 +333,21 @@ class Tienda extends Service
 			if($typoMargin==0) $typoMargin = 1;
 
 			// check if the word is a typo and add it to the list
-			$correctWord = $connection->deepQuery("SELECT word FROM _search_words WHERE word<>'$word' AND levenshtein(word, '$word')<$typoMargin LIMIT 1");
+			$correctWord = $connection->query("SELECT word FROM _search_words WHERE word<>'$word' AND levenshtein(word, '$word')<$typoMargin LIMIT 1");
 			if( ! empty($correctWord))
 			{
 				$correctWord = $correctWord[0]->word;
-				$connection->deepQuery("INSERT IGNORE INTO _search_variations VALUES ('$correctWord','$word','TYPO')");
+				$connection->query("INSERT IGNORE INTO _search_variations VALUES ('$correctWord','$word','TYPO')");
 				$word = $correctWord;
 			}
 
 			// save each word to the database, update the count if the word was already saved
 			$words[] = $word;
-			$connection->deepQuery("INSERT IGNORE INTO _search_words(word) VALUES ('$word');
+			$connection->query("INSERT IGNORE INTO _search_words(word) VALUES ('$word');
 				UPDATE _search_words SET count=count+1, last_usage=CURRENT_TIMESTAMP WHERE word='$word'");
 
 			// add the list of all synonyms and typos to the expression
-			$variations = $connection->deepQuery("SELECT variation FROM _search_variations WHERE word='$word'");
+			$variations = $connection->query("SELECT variation FROM _search_variations WHERE word='$word'");
 			foreach ($variations as $variation) $words[] = $variation->variation;
 		}
 
@@ -358,11 +362,15 @@ class Tienda extends Service
 			GROUP BY ad_title
 			HAVING COUNT(ad_title) = 1";
 
-		$results = $connection->deepQuery($sql);
+// @TODO remove
+$sql = "SELECT *, 0 as popularity FROM _tienda_post LIMIT $limit";
+
+
+		$results = $connection->query($sql);
 
 		// get every search term and its strength
 		$sql = "SELECT * FROM _search_words WHERE word in ('" . implode("','", $words) . "')";
-		$terms = $connection->deepQuery($sql);
+		$terms = $connection->query($sql);
 
 		// assign popularity based on other factors
 		foreach($results as $result)
