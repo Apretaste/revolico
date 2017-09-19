@@ -333,7 +333,11 @@ class Tienda extends Service
 			if($typoMargin==0) $typoMargin = 1;
 
 			// check if the word is a typo and add it to the list
-			$correctWord = $connection->query("SELECT word FROM _search_words WHERE word<>'$word' AND levenshtein(word, '$word')<$typoMargin LIMIT 1");
+			$correctWord = $connection->query("SELECT word FROM _search_words 
+			WHERE word<>'$word' 
+			-- AND levenshtein(word, '$word')<$typoMargin 
+			AND soundex(word) = soundex('$word') 
+			LIMIT 1");
 			if( ! empty($correctWord))
 			{
 				$correctWord = $correctWord[0]->word;
