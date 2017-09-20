@@ -320,7 +320,7 @@ class Tienda extends Service
 	{
 		// get the count and data
 		$connection = new Connection();
-
+/*
 		$words = array();
 		foreach(explode(" ", $query) as $word)
 		{
@@ -357,11 +357,16 @@ class Tienda extends Service
 
 		// create the new, enhanced phrase to search
 		$enhancedQuery = implode(" ", $words);
+*/
 
+		$enhancedQuery = str_replace("'","",$request->query);
+		
 		// search for all the results based on the query created
 		$results = $connection->query("SELECT *, 0 as popularity
 			FROM _tienda_post
-			WHERE MATCH (ad_title) AGAINST ('$enhancedQuery' IN BOOLEAN MODE) > 0
+			WHERE 
+			(MATCH (ad_title) AGAINST ('$enhancedQuery' IN BOOLEAN MODE) > 0 
+			 OR MATCH (ad_body) AGAINST ('$enhancedQuery' IN BOOLEAN MODE) > 0)
 			AND DATEDIFF(NOW(), COALESCE(date_time_posted, NOW())) <=30
 			GROUP BY ad_title
 			HAVING COUNT(ad_title) = 1");
