@@ -320,6 +320,7 @@ class Tienda extends Service
 	{
 		// get the count and data
 		$connection = new Connection();
+		$words = explode(" ", $query);
 /*
 		$words = array();
 		foreach(explode(" ", $query) as $word)
@@ -359,7 +360,7 @@ class Tienda extends Service
 		$enhancedQuery = implode(" ", $words);
 */
 
-		$enhancedQuery = str_replace("'","",$request->query);
+		$enhancedQuery = str_replace("'","",$query);
 		
 		// search for all the results based on the query created
 		$results = $connection->query("SELECT *, 0 as popularity
