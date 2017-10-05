@@ -25,6 +25,12 @@
 			{space5}
 
 			{$item->ad_body}
+
+			{space5}
+
+			<center>
+				{button href="WEB {$item->source_url}" caption="Ver en Revolico"}
+			</center>
 		</td>
 	</tr>
 </table>
