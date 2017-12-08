@@ -180,7 +180,7 @@ class Revolico extends Service
 			HAVING COUNT(ad_title) = 1");
 
 		// get every search term and its strength
-		$sql = "SELECT * FROM _search_words WHERE word in ('" . implode("','", $words) . "')";
+		$sql = "SELECT * FROM _tienda_words WHERE word in ('" . implode("','", $words) . "')";
 		$terms = $connection->query($sql);
 
 		// assign popularity based on other factors

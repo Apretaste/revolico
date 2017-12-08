@@ -6,15 +6,4 @@
 	<serviceDescription>Le permite buscar articulos y servicios en Revolico</serviceDescription>
 	<creatorEmail>salvi@apretaste.com</creatorEmail>
 	<serviceCategory>negocios</serviceCategory>
-	<serviceUsage>
-		<![CDATA[
-			Escriba un email a {APRETASTE_EMAIL} y en el asunto ponga la palabra REVOLICO seguida por el articulo a buscar
-
-			Por ejemplo:
-			Para: {APRETASTE_EMAIL}
-			Asunto: REVOLICO televisor lcd
-
-			Recibir&aacute; un email con todos los televisores LCD a la venta.
-		]]>
-	</serviceUsage>
 </service>
