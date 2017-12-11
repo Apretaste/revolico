@@ -170,13 +170,14 @@ class Revolico extends Service
 		$enhancedQuery = str_replace("'","",$query);
 
 		// search for all the results based on the query created
-		$results = $connection->query("SELECT *, 0 as popularity
+		$results = $connection->query("
+			SELECT *, '0' as popularity
 			FROM _tienda_post
 			WHERE
 			(MATCH (ad_title) AGAINST ('$enhancedQuery' IN BOOLEAN MODE) > 0
 			 OR MATCH (ad_body) AGAINST ('$enhancedQuery' IN BOOLEAN MODE) > 0)
 			AND DATEDIFF(NOW(), COALESCE(date_time_posted, NOW())) <=30
-			GROUP BY ad_title
+			GROUP BY id, ad_title
 			HAVING COUNT(ad_title) = 1");
 
 		// get every search term and its strength
