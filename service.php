@@ -175,7 +175,7 @@ class Revolico extends Service
 			FROM _tienda_post
 			WHERE
 			(MATCH (ad_title) AGAINST ('$enhancedQuery' IN NATURAL LANGUAGE MODE) > 0
-			 OR MATCH (ad_body) AGAINST ('$enhancedQuery' IN NATURAL LANGUAGE BOOLEAN MODE) > 0)
+			 OR MATCH (ad_body) AGAINST ('$enhancedQuery' IN NATURAL LANGUAGE MODE) > 0)
 			AND DATEDIFF(NOW(), COALESCE(date_time_posted, NOW())) <=30
 			GROUP BY id, ad_title
 			HAVING COUNT(ad_title) = 1");
