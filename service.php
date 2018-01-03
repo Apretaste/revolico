@@ -174,17 +174,17 @@ class Revolico extends Service
 
         if (empty("$limit")) $limit = 100;
 
-        // search for all the results based on the query created
-		$results = $connection->query("
+        $sql  = "
 			SELECT * FROM (
 			  SELECT *, '0' as popularity, 
 			      MATCH (ad_title) AGAINST ('$enhancedQuery' IN NATURAL LANGUAGE MODE WITH QUERY EXPANSION) as score
 			  FROM _tienda_post
-			  WHERE  score > 0
 			  ORDER BY score DESC
 			  LIMIT 0, $limit
 			  ) as subq
-            WHERE score > 0");
+            WHERE score > 0";
+        // search for all the results based on the query created
+		$results = $connection->query($sql);
 
 		// get every search term and its strength
 		$sql = "SELECT * FROM _tienda_words WHERE word in ('" . implode("','", $words) . "')";
