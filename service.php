@@ -170,7 +170,7 @@ class Revolico extends Service
 		$enhancedQuery = str_replace("'","",$query);
 
 		Connection::query("DELETE FROM _tienda_post WHERE date_time_posted IS NULL;");
-        Connection::query("DELETE FROM _tienda_post WHERE DATEDIFF(NOW(), date_time_posted, NOW()) > 30;");
+        Connection::query("DELETE FROM _tienda_post WHERE DATEDIFF(NOW(), date_time_posted) > 30;");
 
         if (empty("$limit")) $limit = 100;
 
