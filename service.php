@@ -162,23 +162,29 @@ class Revolico extends Service
 	/**
 	 * Search in the database for the most similar results
 	 */
-	private function search($query, $limit)
+	private function search($query, $limit = 100)
 	{
 		// get the count and data
 		$connection = new Connection();
 		$words = explode(" ", $query);
 		$enhancedQuery = str_replace("'","",$query);
 
-		// search for all the results based on the query created
+		Connection::query("DELETE FROM _tienda_post WHERE date_time_posted IS NULL;");
+        Connection::query("DELETE FROM _tienda_post WHERE DATEDIFF(NOW(), date_time_posted, NOW()) > 30;");
+
+        if (empty("$limit")) $limit = 100;
+
+        // search for all the results based on the query created
 		$results = $connection->query("
-			SELECT *, '0' as popularity
-			FROM _tienda_post
-			WHERE
-			(MATCH (ad_title) AGAINST ('$enhancedQuery' IN NATURAL LANGUAGE MODE WITH QUERY EXPANSION) > 0
-			 OR MATCH (ad_body) AGAINST ('$enhancedQuery' IN NATURAL LANGUAGE MODE WITH QUERY EXPANSION) > 0)
-			AND DATEDIFF(NOW(), COALESCE(date_time_posted, NOW())) <=30
-			GROUP BY id, ad_title
-			HAVING COUNT(ad_title) = 1");
+			SELECT * FROM (
+			  SELECT *, '0' as popularity, 
+			      MATCH (ad_title) AGAINST ('$enhancedQuery' IN NATURAL LANGUAGE MODE WITH QUERY EXPANSION) as score
+			  FROM _tienda_post
+			  WHERE  score > 0
+			  ORDER BY score DESC
+			  LIMIT 0, $limit
+			  ) as subq
+            WHERE score > 0");
 
 		// get every search term and its strength
 		$sql = "SELECT * FROM _tienda_words WHERE word in ('" . implode("','", $words) . "')";
