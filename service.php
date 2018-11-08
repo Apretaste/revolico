@@ -227,19 +227,24 @@ class Revolico extends Service
 
 			// popularity when the query partially match the the title or body
 			$words = explode(" ", $query);
-			if(count($words)>2)
+			$words_count = count($words);
+			if($words_count > 2)
 			{
-				for($i=0; $i<count($words)-2; $i++)
+				for($i=0; $i < $words_count - 2; $i++)
 				{
 					// read words from right to left
-					$phraseR = implode(" ", array_slice($words, 0, $i+2)) . " ";
-					if(strpos($result->ad_title, $phraseR) !== false) $popularity += 20 * count($phraseR);
-					if(strpos($result->ad_body, $phraseR) !== false) $popularity += 10 * count($phraseR);
+					$words_right = array_slice($words, 0, $i + 2);
+					$words_right_count = count($words_right);
+					$phraseR = implode(" ", $words_right) . " ";
+					if(strpos($result->ad_title, $phraseR) !== false) $popularity += 20 * $words_right_count;
+					if(strpos($result->ad_body, $phraseR) !== false) $popularity += 10 * $words_right_count;
 
 					// read words from left to right
-					$phraseL = " " . implode(" ", array_slice($words, $i+1, count($words)));
-					if(strpos($result->ad_title, $phraseL) !== false) $popularity += 20 * count($phraseL);
-					if(strpos($result->ad_body, $phraseL) !== false) $popularity += 10 * count($phraseL);
+					$words_left = array_slice($words, $i+1, $words_count);
+					$words_left_count = count($words_left);
+					$phraseL = " " . implode(" ", $words_left);
+					if(strpos($result->ad_title, $phraseL) !== false) $popularity += 20 * $words_left_count;
+					if(strpos($result->ad_body, $phraseL) !== false) $popularity += 10 * $words_left_count;
 				}
 			}
 
