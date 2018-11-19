@@ -187,10 +187,10 @@ class Revolico extends Service
 		foreach ($words as $word)
 		{
 			if (strlen($word) > 1) // remove words of one letter
-			$new_query .= $word . ' ';
+				$new_query .= $word . ' ';
 		}
 
-		$enhancedQuery = substr($new_query, 250); // max length of ad_title is 250 chars
+		$enhancedQuery = substr($new_query, 0, 250); // max length of ad_title is 250 chars
 		// $enhancedQuery = str_replace("'","",$new_query);
 
 		Connection::query("DELETE FROM _tienda_post WHERE date_time_posted IS NULL;");
