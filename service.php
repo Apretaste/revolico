@@ -166,8 +166,32 @@ class Revolico extends Service
 	{
 		// get the count and data
 		$connection = new Connection();
-		$words = explode(" ", $query);
-		$enhancedQuery = str_replace("'","",$query);
+
+		// clear the query
+		$chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.1234567890"; // allowed chars for query search
+		$queryLength = strlen($query);
+		$new_query = '';
+
+		for($i =0; $i < $queryLength; $i++)
+		{
+			if (stripos($chars, $query[$i]) !== false)
+				$new_query .= $query[$i];
+			else
+				$new_query .= ' ';
+		}
+
+		$new_query = trim($new_query);
+		$words = explode(" ", $new_query);
+		$new_query = '';
+
+		foreach ($words as $word)
+		{
+			if (strlen($word) > 1) // remove words of one letter
+			$new_query .= $word . ' ';
+		}
+
+		$enhancedQuery = substr($new_query, 250); // max length of ad_title is 250 chars
+		// $enhancedQuery = str_replace("'","",$new_query);
 
 		Connection::query("DELETE FROM _tienda_post WHERE date_time_posted IS NULL;");
         Connection::query("DELETE FROM _tienda_post WHERE date_time_posted < DATE_SUB(NOW(), INTERVAL 30 day);");
@@ -193,9 +217,6 @@ class Revolico extends Service
 		// assign popularity based on other factors
 		foreach($results as $result)
 		{
-			// restart populatiry
-			$popularity = 0;
-
 			// do not show email desconocido@apretaste.com
 			if($result->contact_email_1 == 'desconocido@apretaste.com') $result->contact_email_1 = "";
 			if($result->contact_email_2 == 'desconocido@apretaste.com') $result->contact_email_2 = "";
