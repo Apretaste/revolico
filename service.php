@@ -185,6 +185,7 @@ class Revolico extends Service
 		$new_query = '';
 
 		$wordsIndex = [];
+		$i = 0;
 		foreach ($words as $word)
 		{
 			if (strlen($word) > 1 && !isset($wordsIndex[$word])) // remove words of one letter
@@ -192,9 +193,13 @@ class Revolico extends Service
 				$new_query .= $word . ' ';
 				$wordsIndex[$word] = true;
 			}
+
+			$i++;
+			if ($i > 10) break;
 		}
 
-		$enhancedQuery = substr($new_query, 0, 250); // max length of ad_title is 250 chars
+		$enhancedQuery = substr($new_query, 0,60); // max length of ad_title is 250 chars, too long for query!
+
 		// $enhancedQuery = str_replace("'","",$new_query);
 
 		Connection::query("DELETE FROM _tienda_post WHERE date_time_posted IS NULL;");
