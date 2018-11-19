@@ -184,10 +184,14 @@ class Revolico extends Service
 		$words = explode(" ", $new_query);
 		$new_query = '';
 
+		$wordsIndex = [];
 		foreach ($words as $word)
 		{
-			if (strlen($word) > 1) // remove words of one letter
+			if (strlen($word) > 1 && !isset($wordsIndex[$word])) // remove words of one letter
+			{
 				$new_query .= $word . ' ';
+				$wordsIndex[$word] = true;
+			}
 		}
 
 		$enhancedQuery = substr($new_query, 0, 250); // max length of ad_title is 250 chars
